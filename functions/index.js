@@ -8,8 +8,8 @@ const creatorAddress = '3H1XGgU3XzELBUCLvwNwYG26GNH7qtiXN7VFodzu7akh';
 exports.verifyNFT = functions.https.onRequest(async (request, response) => {
   try {
     const {token} = request.query;
-    let mintPubkey = new PublicKey(token);
-    let tokenmetaPubkey = await Metadata.getPDA(mintPubkey);
+    const mintPubkey = new PublicKey(token);
+    const tokenmetaPubkey = await Metadata.getPDA(mintPubkey);
 
     const {
       data: { data: metadata }
