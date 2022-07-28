@@ -7,17 +7,18 @@ const creatorAddress = '3H1XGgU3XzELBUCLvwNwYG26GNH7qtiXN7VFodzu7akh';
 
 exports.verifyNFT = functions.https.onRequest(async (request, response) => {
   try {
+    const startMS = Date.now();
     const {token} = request.query;
-    const mintPubkey = new PublicKey(token);
-    const tokenmetaPubkey = await Metadata.getPDA(mintPubkey);
+    const mintPubKey = new PublicKey(token);
+    const tokenMetaPubKey = await Metadata.getPDA(mintPubKey);
 
     const {
       data: { data: metadata }
-    } = await Metadata.load(connection, tokenmetaPubkey);
+    } = await Metadata.load(connection, tokenMetaPubKey);
 
     const verified = !metadata.creators.find(c => Number(c.verified) === 0 && c.address === creatorAddress)
     functions.logger.info(metadata, {structuredData: true});
-    response.json({verified});
+    response.json({verified, timesTakenMs: Date.now() - startMS});
   } catch (e) {
     functions.logger.error(e);
     response.send(`Error occurred ${e.message}`);
